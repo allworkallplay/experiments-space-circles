@@ -1,0 +1,22 @@
+{
+  "name": "vite-vanilla-js-template",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "eslint": "^7.22.0",
+    "htmlhint": "^1.1.4",
+    "vite": "^2.1.0"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "lil-gui": "^0.18.2",
+    "pixi-filters": "^5.2.1",
+    "pixi.js": "^7.2.4",
+    "signal-js": "^3.0.1",
+    "three": "^0.151.3"
+  }
+}
