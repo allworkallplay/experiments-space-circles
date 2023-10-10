@@ -18,29 +18,40 @@ export default class EclipseCircle extends DisplayCircle {
 
         // this.color = options.color || 0x070e90;
 
+        this.glowBlurFilter = new BlurFilter(600, this.options.quality, 2 );
         this.glowContainer = new PIXI.Container();
         this.glowContainer.graphics = new PIXI.Graphics();
         this.glowContainer.addChildAt(this.glowContainer.graphics);
         this.glowContainer.alpha = this.options.glowAlpha;
         this.glowContainer.filters = [
-            new BlurFilter(600, this.options.quality, 2 ),
+            this.glowBlurFilter,
         ];
         this.container.addChildAt(this.glowContainer,0);
 
+        this.coronaBlurFilter = new BlurFilter(200, this.options.quality, 2 );
         this.coronaContainer = new PIXI.Container();
         this.coronaContainer.graphics = new PIXI.Graphics();
         this.coronaContainer.addChildAt(this.coronaContainer.graphics);
         this.coronaContainer.alpha = this.options.glowAlpha;
         this.coronaContainer.filters = [
-            new BlurFilter(200, this.options.quality, 2 ),
+            this.coronaBlurFilter
         ];
         this.container.addChildAt(this.coronaContainer,0);
+        
+        this.coronaContainer.cacheAsBitmap = true;
+        this.glowContainer.cacheAsBitmap = true;
 
         this.update();
     }
 
     update() {
+        this.coronaContainer.cacheAsBitmap = false;
+        this.glowContainer.cacheAsBitmap = false;
+
         this.draw();
+
+        this.coronaContainer.cacheAsBitmap = true;
+        this.glowContainer.cacheAsBitmap = true;
     }
 
     gatherExportData () {
@@ -59,6 +70,39 @@ export default class EclipseCircle extends DisplayCircle {
         this.coronaContainer.graphics.destroy();
         this.coronaContainer.destroy();
     }
+
+    // dragging
+    onDragStart (event) {
+        super.onDragStart(event);
+
+        this.coronaContainer.filters = [  ];
+        this.glowContainer.filters = [  ];
+
+        this.coronaContainer.cacheAsBitmap = false;
+        this.glowContainer.cacheAsBitmap = false;
+    }
+
+    onDragEnd (event) {
+        super.onDragEnd(event);
+
+        console.log("drag end");
+
+        this.coronaContainer.filters = [ this.coronaBlurFilter ];
+        this.glowContainer.filters = [ this.glowBlurFilter ];
+    }
+
+    onDragMove (event) {
+        if (this.dragging) {
+            if (this.anchored === true) {
+                this.changeAnchorAngleFromPoint( event.global.x+this.dragOffset.x, event.global.y+this.dragOffset.y );
+            } else if (this.anchored === false ) {
+                this.changeCenter( event.global.x+this.dragOffset.x, event.global.y+this.dragOffset.y );
+            }
+            //this.update();
+        }
+    }
+
+    //
 
     draw () {
         super.draw();

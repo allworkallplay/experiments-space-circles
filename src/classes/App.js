@@ -237,7 +237,9 @@ export default class App {
 
     uiMouseUp (e) {
         this.main.off('mousemove', this.mainMouseMoveHandlerRef);
-        
+        if (this.uiActiveObj) {
+            this.uiActiveObj.onDragEnd(e);
+        }
         // if (this.uiActiveObj) {
         //     this.uiActiveObj.onDragEnd(e);
         //     this.uiActiveObj.update();
